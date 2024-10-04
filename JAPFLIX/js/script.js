@@ -11,9 +11,6 @@ fetch(URLMovieData)
     console.error(error);
 });
 
-function setPeliculaID(id){
-localStorage.setItem("id", id);
-}
 
 function Mostrarpeliculas(array) {
     let htmlContentToAppend = "";
@@ -24,7 +21,7 @@ function Mostrarpeliculas(array) {
         htmlContentToAppend += `
 
         <div id="divlista" class="row">
-         <div id="divconcat" class="col-lg-9" onclick="setPeliculaID(${pelicula.id})">
+         <div id="divconcat" class="col-lg-9" onclick="Mostrarinformacion(${pelicula.id})">
                 <h4 class="titulopelicula">${pelicula.title}</h4>
                 <p class="overview">${pelicula.overview}</p>
                 </div>
@@ -68,28 +65,33 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("btnBuscar").addEventListener("click", filtrarpeliculas);
 });
 
+function Mostrarinformacion(id) {
+    const peliculas = JSON.parse(localStorage.getItem('peliculas'));
+    const pelicula = peliculas.find(p => p.id === id);
+    let genres = pelicula.genres.map(genre => genre.name).join(", ");
+    let releaseYear = new Date(pelicula.release_date).getFullYear();
+    
+    let htmlContentToAppend = `
+    <div>    
+    <h4 class="titulopeliculadesplegable">${pelicula.title}</h4>
+    </div>
+        <p class="overview">${pelicula.overview}</p>
+        <div id="genres">${genres}
+        <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+   More
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">Year: ${releaseYear}</a></li>
+    <li><a class="dropdown-item" href="#">Runtime: ${pelicula.runtime} mins</a></li>
+    <li><a class="dropdown-item" href="#">Budget: $${pelicula.budget}</a></li>
+    <li><a class="dropdown-item" href="#">Revenue: $${pelicula.revenue}
+  </ul>
+</div>
+        </div>
+    `;
 
-function Mostrarinformacion(array) {
-    let htmlContentToAppend = "";
-
-    for (let i = 0; i < array.length; i++) {
-        let pelicula = array[i];
-
-        htmlContentToAppend += `
-
-         <div id="infodesplegable">
-                <h4 class="titulopelicula">${pelicula.title}</h4>
-                <p class="overview">${pelicula.overview}</p>
-                </div>
-                <div id="genres">
-                   ${pelicula.genre.name}
-                </div>
-        </div>`;
-    }   
+    document.getElementById("desplegable").innerHTML = htmlContentToAppend;
+    
+    new bootstrap.Offcanvas(document.getElementById('offcanvasTop')).show();
 }
-
-document.getElementById("desplegable").innerHTML = htmlContentToAppend;
-
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("divlista").addEventListener("click", Mostrarinformacion);
-});

@@ -60,3 +60,17 @@ main {
 .star.filled {
     color: #f5b301; /* Color de estrellas activas */
 }
+.titulopeliculadesplegable{
+color: black;
+margin-bottom: 1.5%;
+}
+#desplegable{
+    display: block;
+}
+
+div.dropdown{
+    float: right;
+}
+#divconcat{
+    cursor: pointer;
+}
